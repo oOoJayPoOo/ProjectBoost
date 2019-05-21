@@ -24,6 +24,7 @@ public class Ship : MonoBehaviour
 	State state = State.Alive;
 	const int maxSceneNumber = 2;
 	int currentSceneNumber;
+	private bool bCollisionToggle = true;
 
 	// Use this for initialization
 	void Start ()
@@ -36,6 +37,11 @@ public class Ship : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if (Debug.isDebugBuild)
+		{
+			HandleDebugKeysInput();
+		}
+
 		if (state == State.Alive)
 		{
 			HandleThrustInput();
@@ -45,7 +51,7 @@ public class Ship : MonoBehaviour
 
 	void OnCollisionEnter(Collision collision)
 	{
-		if (state != State.Alive)
+		if (state != State.Alive || bCollisionToggle == false)
 		{
 			return;
 		}
@@ -97,6 +103,19 @@ public class Ship : MonoBehaviour
 	private void LoadFirstLevel()
 	{
 		SceneManager.LoadScene(0);
+	}
+
+	private void HandleDebugKeysInput()
+	{
+		if (Input.GetKeyDown(KeyCode.C))
+		{
+			bCollisionToggle = !bCollisionToggle;
+		}
+
+		if (Input.GetKeyDown(KeyCode.L))
+		{
+			LoadNextScene();
+		}
 	}
 
 	private void HandleThrustInput()
