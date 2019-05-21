@@ -83,6 +83,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1198836676975022
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4991500196336202}
+  - component: {fileID: 108412710701728870}
+  m_Layer: 0
+  m_Name: Spotlight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1380504150394612
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,6 +236,7 @@ Transform:
   - {fileID: 4248269114604020}
   - {fileID: 4529865602516530}
   - {fileID: 4515108166643326}
+  - {fileID: 4991500196336202}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -327,6 +344,19 @@ Transform:
   m_Father: {fileID: 4210954130004220}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4991500196336202
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1198836676975022}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.15, y: 2.32, z: -0.07}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4210954130004220}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!23 &23164849467413786
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -728,6 +758,42 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!108 &108412710701728870
+Light:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1198836676975022}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 0
+  m_Color: {r: 0.85228497, g: 0.88235295, b: 0.57093424, a: 1}
+  m_Intensity: 9.1
+  m_Range: 16.58
+  m_SpotAngle: 61.94
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
 --- !u!114 &114360547748709612
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -741,6 +807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rcsThrust: 225
   rscMainThrust: 2000
+  levelLoadDelay: 1
   mainEngine: {fileID: 8300000, guid: a833ec02c03fe3549bfe092eb95f5565, type: 3}
   death: {fileID: 8300000, guid: 65350c8f088773e4dbf92ef91e66721f, type: 3}
   finish: {fileID: 8300000, guid: 25fb6a5e8aab64442acb58e54222ae57, type: 3}
