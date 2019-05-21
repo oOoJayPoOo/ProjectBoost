@@ -7,21 +7,30 @@ public class Ship : MonoBehaviour
 {
 	[SerializeField] float rcsThrust = 100f;
 	[SerializeField] float rscMainThrust = 100f;
+	[SerializeField] float levelLoadDelay = 1f;
+
 	[SerializeField] AudioClip mainEngine;
 	[SerializeField] AudioClip death;
 	[SerializeField] AudioClip finish;
+
+	[SerializeField] ParticleSystem mainEngineParticles;
+	[SerializeField] ParticleSystem finishParticles;
+	[SerializeField] ParticleSystem deathParticles;
 
 	Rigidbody rigidBody;
 	AudioSource audioSource;
 
 	enum State {Alive, Dying, Transcending};
 	State state = State.Alive;
+	const int maxSceneNumber = 2;
+	int currentSceneNumber;
 
 	// Use this for initialization
 	void Start ()
 	{
 		rigidBody = GetComponent<Rigidbody>();
 		audioSource = GetComponent<AudioSource>();
+		currentSceneNumber = SceneManager.GetActiveScene().buildIndex;
 	}
 	
 	// Update is called once per frame
@@ -60,7 +69,8 @@ public class Ship : MonoBehaviour
 		rigidBody.constraints = RigidbodyConstraints.FreezeAll;
 		audioSource.Stop();
 		audioSource.PlayOneShot(finish);
-		Invoke("LoadNextScene", 1f);
+		finishParticles.Play();
+		Invoke("LoadNextScene", levelLoadDelay);
 	}
 
 	private void StartDeathSequence()
@@ -68,12 +78,20 @@ public class Ship : MonoBehaviour
 		state = State.Dying;
 		audioSource.Stop();
 		audioSource.PlayOneShot(death);
-		Invoke("LoadFirstLevel", 1);
+		deathParticles.Play();
+		Invoke("LoadFirstLevel", levelLoadDelay);
 	}
 
 	private void LoadNextScene()
 	{
-		SceneManager.LoadScene(1);
+		if (currentSceneNumber < maxSceneNumber)
+		{
+			SceneManager.LoadScene(currentSceneNumber + 1);
+		}
+		else
+		{
+			SceneManager.LoadScene(currentSceneNumber);
+		}
 	}
 
 	private void LoadFirstLevel()
@@ -90,16 +108,18 @@ public class Ship : MonoBehaviour
 		else
 		{
 			audioSource.Stop();
+			mainEngineParticles.Stop();
 		}
 	}
 
 	private void ApplyThrust()
 	{
+		rigidBody.AddRelativeForce(Vector3.up * rscMainThrust * Time.deltaTime);
 		if (audioSource.isPlaying == false)
 		{
 			audioSource.PlayOneShot(mainEngine);
 		}
-		rigidBody.AddRelativeForce(Vector3.up * rscMainThrust);
+		mainEngineParticles.Play();
 	}
 
 	private void HandleRotationInput()
