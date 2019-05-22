@@ -20,10 +20,9 @@ public class Ship : MonoBehaviour
 	Rigidbody rigidBody;
 	AudioSource audioSource;
 
-	enum State {Alive, Dying, Transcending};
-	State state = State.Alive;
-	const int maxSceneNumber = 2;
-	int currentSceneNumber;
+	private bool isTransitioning = false;
+	private int maxSceneNumber;
+	private int currentSceneNumber;
 	private bool bCollisionToggle = true;
 
 	// Use this for initialization
@@ -32,6 +31,7 @@ public class Ship : MonoBehaviour
 		rigidBody = GetComponent<Rigidbody>();
 		audioSource = GetComponent<AudioSource>();
 		currentSceneNumber = SceneManager.GetActiveScene().buildIndex;
+		maxSceneNumber = SceneManager.sceneCountInBuildSettings - 1;	//build index starts at 0
 	}
 	
 	// Update is called once per frame
@@ -42,7 +42,7 @@ public class Ship : MonoBehaviour
 			HandleDebugKeysInput();
 		}
 
-		if (state == State.Alive)
+		if (isTransitioning == false)
 		{
 			HandleThrustInput();
 			HandleRotationInput();
@@ -51,7 +51,7 @@ public class Ship : MonoBehaviour
 
 	void OnCollisionEnter(Collision collision)
 	{
-		if (state != State.Alive || bCollisionToggle == false)
+		if (isTransitioning || bCollisionToggle == false)
 		{
 			return;
 		}
@@ -71,7 +71,7 @@ public class Ship : MonoBehaviour
 
 	private void StartFinishSequence()
 	{
-		state = State.Transcending;
+		isTransitioning = true;
 		rigidBody.constraints = RigidbodyConstraints.FreezeAll;
 		audioSource.Stop();
 		audioSource.PlayOneShot(finish);
@@ -81,7 +81,7 @@ public class Ship : MonoBehaviour
 
 	private void StartDeathSequence()
 	{
-		state = State.Dying;
+		isTransitioning = true;
 		audioSource.Stop();
 		audioSource.PlayOneShot(death);
 		deathParticles.Play();
@@ -96,7 +96,7 @@ public class Ship : MonoBehaviour
 		}
 		else
 		{
-			SceneManager.LoadScene(currentSceneNumber);
+			LoadFirstLevel();;
 		}
 	}
 
@@ -126,8 +126,7 @@ public class Ship : MonoBehaviour
 		}
 		else
 		{
-			audioSource.Stop();
-			mainEngineParticles.Stop();
+			StopThrust();
 		}
 	}
 
@@ -141,21 +140,27 @@ public class Ship : MonoBehaviour
 		mainEngineParticles.Play();
 	}
 
+	private void StopThrust()
+	{
+		audioSource.Stop();
+		mainEngineParticles.Stop();
+	}
 	private void HandleRotationInput()
 	{
-		rigidBody.freezeRotation = true;	//control rotation manually
-
-		float frameRotation = rcsThrust * Time.deltaTime;
-
 		if (Input.GetKey(KeyCode.A))
 		{
-			transform.Rotate(Vector3.forward * frameRotation);
+			RotateManually(rcsThrust * Time.deltaTime);
 		}
 		else if (Input.GetKey(KeyCode.D))
 		{
-			transform.Rotate(Vector3.back * frameRotation);
+			RotateManually(-rcsThrust * Time.deltaTime);
 		}
+	}
 
+	private void RotateManually(float frameRotation)
+	{
+		rigidBody.freezeRotation = true;	//control rotation manually
+		transform.Rotate(Vector3.forward * frameRotation);
 		rigidBody.freezeRotation = false;	//control rotation with physics
 	}
 }
